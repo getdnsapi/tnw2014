@@ -86,8 +86,7 @@ var encryptTlsa = function(callback) {
         }
         try {
             var key = record.rdata.certificate_association_data;
-            var buffer = new Buffer(key, 'binary');
-            var pemCert = derToPem(buffer);
+            var pemCert = derToPem(key);
             pem.getPublicKey(pemCert, function(err, result) {
                 if (err) { return callback(err); }
                 var key = ursa.createPublicKey(result.publicKey);
