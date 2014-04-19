@@ -26,8 +26,7 @@ var options = {
 var context = getdns.createContext(options);
 
 // response util - get a secure response of a particular type
-var getFirstSecureResponse = function(err, result, type) {
-    if (err) { return err; }
+var getFirstSecureResponse = function(result, type) {
     var replies_tree = result.replies_tree;
     // validate that there is a reply with an answer
     if (!replies_tree || !replies_tree.length ||
@@ -53,7 +52,8 @@ var getFirstSecureResponse = function(err, result, type) {
 
 var encryptPgp = function(callback) {
     context.lookup(PGP_NAME, PGP_TYPE, function(err, result) {
-        var record = getFirstSecureResponse(err, result, PGP_TYPE);
+        if(err){ return callback(err, null); }
+        var record = getFirstSecureResponse(result, PGP_TYPE);
         if (typeof record === "string") {
             // error
             return callback(record, null);
@@ -79,7 +79,8 @@ var derToPem = function(derBuffer) {
 
 var encryptTlsa = function(callback) {
     context.lookup(TLSA_NAME, TLSA_TYPE, function(err, result) {
-        var record = getFirstSecureResponse(err, result, TLSA_TYPE);
+        if(err){ return callback(err, null); }
+        var record = getFirstSecureResponse(result, TLSA_TYPE);
         if (typeof record === "string") {
             // error
             return callback(record, null);
